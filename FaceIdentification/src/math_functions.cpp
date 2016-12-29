@@ -30,15 +30,16 @@
  */
 
 #include "math_functions.h"
-#include <xmmintrin.h>
+//#include <xmmintrin.h>
 #include <cstdint>
 
 #ifdef _WIN32
 #include <intrin.h>
 #else
-#include <x86intrin.h>
+//#include <x86intrin.h>
 #endif
 
+#ifdef _WIN32
 float simd_dot(const float* x, const float* y, const long& len) {
   float inner_prod = 0.0f;
   __m128 X, Y; // 128-bit values
@@ -60,6 +61,35 @@ float simd_dot(const float* x, const float* y, const long& len) {
   }
   return inner_prod;
 }
+#else
+float simd_dot(const float *a, const float *b, const long& n)
+{
+float net1D=0.0f;
+//assert(n%4==0);     // required floats 'a' & 'b' to be multiple of 4
+#if 1
+asm volatile (
+              "vmov.f32 q8, #0.0          \n\t" // zero out q8 register
+              "1:                         \n\t"
+              "subs %3, %3, #4            \n\t" // we load 4 floats into q0, and q2 register
+              "vld1.f32 {d0,d1}, [%1]!    \n\t" // loads q0, update pointer *a
+              "vld1.f32 {d4,d5}, [%2]!    \n\t" // loads q2, update pointer *b
+              "vmla.f32 q8, q0, q2        \n\t" // store four partial sums in q8
+              "bgt 1b                     \n\t"   // loops to label 1 until n==0
+              "vpadd.f32 d0, d16, d17     \n\t"   // pairwise add 4 partial sums in q8, store in d0
+              "vadd.f32 %0, s0, s1        \n\t"   // add 2 partial sums in d0, store result in return variable net1D
+              : "=w"(net1D)                 // output
+              : "r"(a), "r"(b), "r"(n)      // input
+              : "q0", "q2", "q8");          // clobber list
+#else
+for (int k=0; k < n; k++) {
+    net1D += a[k] * b[k];
+}
+#endif
+return net1D;
+}
+#endif
+
+
 
 void matrix_procuct(const float* A, const float* B, float* C, const int n,
     const int m, const int k, bool ta, bool tb) {
