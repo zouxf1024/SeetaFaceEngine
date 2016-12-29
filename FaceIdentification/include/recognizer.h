@@ -116,6 +116,21 @@ public:
 	return 1;
   }
 
+  uint8_t ExtractFeatureWithCropToFile(const ImageData &src_img, 
+      float* const points, const std::string file_name) {
+    // crop
+    Blob crop_blob;
+    aligner_->Alignment(src_img, points, &crop_blob);
+    // extract feature
+    net_->input_blobs(0)->SetData(crop_blob);
+    net_->Execute();
+
+    net_->output_blobs(0)->ToBinaryFile(file_name);
+    net_->Release();
+    
+    return 1;
+  }
+
   uint8_t ExtractFeature(unsigned char* const u_data, uint16_t* const feat) {
 	//To do: compress features 
     return 1;

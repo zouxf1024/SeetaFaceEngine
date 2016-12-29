@@ -112,6 +112,18 @@ uint8_t FaceIdentification::ExtractFeatureWithCrop(const ImageData &src_image,
   return 1;
 }
 
+uint8_t FaceIdentification::ExtractFeatureWithCropToFile(const ImageData &src_image, 
+    const FacialLandmark* llpoint, 
+    const std::string filename) {
+  float point_data[10];
+  for (int i = 0; i < 5; ++i) {
+	point_data[i * 2] = llpoint[i].x;
+	point_data[i * 2 + 1] = llpoint[i].y;
+  }
+  recognizer->ExtractFeatureWithCropToFile(src_image, point_data, filename);
+  return 1;
+}
+
 float FaceIdentification::CalcSimilarity(FaceFeatures const fc1,
     FaceFeatures const fc2,
     long dim) {

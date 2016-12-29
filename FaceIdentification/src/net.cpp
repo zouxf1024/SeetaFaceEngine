@@ -69,13 +69,13 @@ void Net::SetUp() {
 
 void Net::Execute() {
   // 1. check input blobs
-  CheckInput();
+  //CheckInput();     //checked in child class's Execute
   // 2. execute
   for (int i = 0; i < nets_.size(); ++ i) {
     nets_[i]->Execute();
   }
   // 3. check output blobs
-  CheckOutput();
+  //CheckOutput();   //checked in child class's Execute
 }
 
 void Net::CheckInput() {

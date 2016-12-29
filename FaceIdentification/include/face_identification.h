@@ -35,6 +35,8 @@
 
 #include "common.h"
 
+#include <string>
+
 typedef float* FaceFeatures;
 
 namespace seeta {
@@ -84,6 +86,10 @@ public:
   SEETA_API uint8_t ExtractFeatureWithCrop(const ImageData &src_image,
       const FacialLandmark *llpoint,
       FaceFeatures const feats);
+
+  SEETA_API uint8_t ExtractFeatureWithCropToFile(const ImageData &src_image,
+      const FacialLandmark *llpoint,
+      const std::string filename);
 
   // Calculate similarity of face features fc1 and fc2.
   // dim = -1 default feature size
