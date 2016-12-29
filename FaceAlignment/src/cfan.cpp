@@ -33,6 +33,7 @@
 #include "cfan.h"
 #include <string.h>
 #include <algorithm>
+#include <math.h>
 /** A constructor.
   *  Initialize basic parameters.
   */
@@ -205,7 +206,7 @@ void CCFAN::FacialPointLocate(const unsigned char *gray_im, int im_width, int im
   {
     for (int j = 0; j < pts_num_; j++)
     {
-      if (isnan(fea[j * 128 + i]))
+      if (std::isnan(fea[j * 128 + i]))
       {
         re_fea[i*pts_num_ + j] = 0;
       }
@@ -281,7 +282,7 @@ void CCFAN::FacialPointLocate(const unsigned char *gray_im, int im_width, int im
   {
     for (int j = 0; j < pts_num_; j++)
     {
-      if (isnan(fea[j * 128 + i]))
+      if (std::isnan(fea[j * 128 + i]))
       {
         re_fea[i*pts_num_ + j] = 0;
       }
